@@ -1,0 +1,45 @@
+<h1>This is BlackJack Game</h1>
+
+<p>Hello,<%= session[:player_name] %></p>
+
+<%if @play_again %>
+  <p>Wanna play again?</p>
+  <a href="/game" class="btn btn_primary">YES</a>
+  <a href="/game_over" class="btn">NO</a>
+<% end %>
+
+<div class="well">
+  <p>Dealer's Cards</p>
+
+    <% session[:dealer_cards].each do |card| %>
+     <%= card_image(card) %>
+    <% end %>
+
+
+    <p>Dealer's total is <%= calculate_total(session[:dealer_cards])  %></p>
+
+  <% if @show_dealer_hit_button %>
+    <form action='/game/dealer/hit' method='post'>
+      <input type="submit" class="btn" value="Deal one card to dealer"/>  
+    </form>
+  <% end %>
+</div>
+
+<div class="well">
+  <p>Player's Cards</p>
+    <% session[:player_cards].each do |card| %>
+     <%= card_image(card) %>
+    <% end %>
+  <p><%=session[:player_name]%>'s total is <%= calculate_total(session[:player_cards]) %></p>
+</div>  
+
+<% if @show_hit_or_stay_button %>
+<form id="hit_button" action='/player/hit' method='post'>
+  <input type="submit" class="btn" value="HIT">
+</form>
+
+<form id="stay_button" action='/player/stay' method='post'>
+  <input type="submit" class="btn" value="STAY">
+</form>
+<% end %>
+
