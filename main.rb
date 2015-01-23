@@ -5,6 +5,7 @@ set :sessions, true
 
 BLACKJACK = 21
 MIN_HIT = 17
+INITIAL_POT_AMOUNT = 500
 
 helpers do
   def calculate_total(cards)
@@ -42,6 +43,33 @@ helpers do
 
     "<img src='/images/cards/#{suit}_#{value}.jpg' class='image'/>"
   end
+
+  def winner!(msg)
+    @show_hit_or_stay_button = false
+    @success ="<strong>#{session[:player_name]}</strong> win!!! #{msg}"
+    session[:player_pot] = session[:player_pot] + session[:player_bet]
+    @play_again = true
+    
+  end 
+
+  def loser!(msg)
+    @show_hit_or_stay_button = false
+    @error = "<strong>#{session[:player_name]}</strong> lose!!! #{msg}"
+    session[:player_pot] = session[:player_pot] - session[:player_bet]
+    if session[:player_pot] = 0
+      @show_recharge_money_button = true
+      @play_again = false
+    else
+      @play_again = true
+    end
+  end
+
+  def tie!(msg)
+    @show_hit_or_stay_button = false
+    @success = "it's a tie!"
+    @play_again = true
+  end
+  
 end
 
 before do
@@ -59,15 +87,45 @@ get '/' do
 end
 
 get '/new_player' do
+  session[:player_pot] = INITIAL_POT_AMOUNT
   erb :new_player
 end
 
 post '/new_player' do 
-  session[:player_name] = params[:player_name] 
-  redirect '/game'
+  if params[:player_name].empty?
+    @error = "Name is required"
+    halt erb(:new_player)
+  end
+
+  session[:player_name] = params[:player_name].capitalize 
+  redirect '/bet'
+end
+
+get '/bet' do
+  erb :bet
+end
+
+post '/bet' do 
+  if params[:bet_amount].nil? || params[:bet_amount].to_i == 0
+    @error = "You must to bet something"
+    halt erb(:bet)
+  elsif params[:bet_amount].to_i >  session[:player_pot]
+    @error = "You have $#{session[:player_pot]} only,please don't bet more than what you have."
+    halt erb(:bet)
+  else
+    session[:player_bet] = params[:bet_amount].to_i
+    redirect '/game'
+  end
+end
+
+post '/player/restore_money' do
+  session[:player_pot] = INITIAL_POT_AMOUNT
+  redirect '/bet'
 end
 
 get '/game' do 
+  session[:turn] = session[:player_name]  
+
   suit = ["diamonds","spades","clubs","hearts"]
   value = [2,3,4,5,6,7,8,9,10,"J","Q","K","A"]
   session[:deck] = suit.product(value).shuffle!
@@ -87,16 +145,12 @@ post '/player/hit' do
 
   player_total = calculate_total(session[:player_cards])
   if player_total == BLACKJACK
-    @success = "Congrat! #{session[:player_name]} hit Black Jack"
-    @show_hit_or_stay_button = false
-    @play_again = true
+    winner!("#{session[:player_name]} hit Black Jack")
   elsif player_total > BLACKJACK 
-    @error = "Sorry ,#{session[:player_name]} busted"
-    @show_hit_or_stay_button = false
-    @play_again = true
+    loser!("Sorry ,#{session[:player_name]} is busted at #{player_total}")
   end
   
-  erb :game
+  erb :game , layout: false
 end
 
 post '/player/stay' do
@@ -106,20 +160,22 @@ post '/player/stay' do
 end 
 
 get '/game/dealer' do
+  session[:turn] = "dealer"
+
+  @show_hit_or_stay_button = false
+  player_total = calculate_total(session[:player_cards])
   dealer_total = calculate_total(session[:dealer_cards])
   if dealer_total == BLACKJACK
-    @success = "#{session[:player_name]} lose, Dealer hit BlackJack!"
-    @play_again = true
+    loser!("Dealer hit BlackJack!")
   elsif dealer_total > BLACKJACK
-    @success = "#{session[:player_name]} win, Dealer is busted!"
-    @play_again = true
-  elsif dealer_total >= MIN_HIT
-      redirect '/game/compare'   #have to def
+    winner!("Dealer is #{dealer_total}, is busted!")
+  elsif dealer_total >= MIN_HIT || dealer_total > player_total
+      redirect '/game/compare'   #have to def     
   else
     @show_dealer_hit_button = true
   end
 
-  erb :game
+  erb :game ,layout: false
 end
 
 post '/game/dealer/hit' do 
@@ -132,21 +188,22 @@ get '/game/compare' do
   dealer_total = calculate_total(session[:dealer_cards])
 
   if player_total < dealer_total
-    @error = "#{session[:player_name]} LOSE! "
-    @play_again = true
-  elsif player_total > @dealer_total
-    @success = "#{session[:player_name]} WIN! "
-    @play_again = true
+    loser!("Dealer is win at #{dealer_total} and #{session[:player_name]} is #{player_total}")
+  elsif player_total > dealer_total
+    winner!("#{session[:player_name]} win at #{player_total} , dealer is #{dealer_total}")
   else
-    @success = "It's a tie"
-    @play_again = true
+    tie!("Both stay at #{player_total}")
   end
 
-  erb :game     
+  erb :game , layout: false
 end
 
 get '/game_over' do 
   erb :game_over
+end
+
+get '/get_money' do 
+  erb :get_money
 end
 
 
