@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'sinatra'
 
-set :sessions, true
+enable :sessions
 
 BLACKJACK = 21
 MIN_HIT = 17
@@ -107,7 +107,7 @@ get '/bet' do
 end
 
 post '/bet' do 
-  session[:player_pot] = INITIAL_POT_AMOUNT
+  
   if params[:bet_amount].nil? || params[:bet_amount].to_i == 0
     @error = "You must to bet something"
     halt erb(:bet)
