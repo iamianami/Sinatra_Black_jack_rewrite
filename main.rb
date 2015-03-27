@@ -1,10 +1,9 @@
 require 'rubygems'
 require 'sinatra'
 
-configure do
-  enable :sessions
-  set :session_secret, ENV['SESSION_SECRET'] ||= 'super secret'
-end
+
+enable :sessions
+set :session_secret, ENV['a_longish_secret_key']
 
 BLACKJACK = 21
 MIN_HIT = 17
