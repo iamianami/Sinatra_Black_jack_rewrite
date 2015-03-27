@@ -2,6 +2,7 @@ require 'rubygems'
 require 'sinatra'
 
 enable :sessions
+set :session_secret, "some_random_value"
 
 BLACKJACK = 21
 MIN_HIT = 17
