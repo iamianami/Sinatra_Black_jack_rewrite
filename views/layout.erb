@@ -7,27 +7,49 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="/application.js"></script>
   </head>
-  <body style="padding-top: 50px;">
 
+  <body>
+  <!-- <div id='navbartop'>  
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
             <ul class="nav">
-              <li><a href="/new_player">Restart the Game</a></li>
+              <li><a href="/new_player">再來一局</a></li>
             </ul>
         </div>
       </div>
     </div>
+  </div> -->
 
-  <div class="container">
+
+
     <%if @error %>
-      <div class="alert alert-error"><%=@error%></div>
+      <h1 style="color:red" class="text-center"><%=@error%></h1>
     <% end %>
 
     <%if @success %>
-      <div class="alert alert-success"><%=@success%></div>
+      <h1 style="color:white" class="text-center"><%=@success%></h1>
     <% end %>
-      <%= yield %>
-  </div>
+
+    <%= yield %>
+ 
+   <!--  <div class="footer navbar-fixed-bottom">
+      <div class="text-center">
+        <p style="color:white">Made by Ian @</p>
+      </div>
+    </div> -->
+
+
+      
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
   </body>
 </html>
+
+   

@@ -45,22 +45,21 @@ helpers do
   end
 
   def winner!(msg)
-    @show_hit_or_stay_button = false
-    @success ="<strong>#{session[:player_name]}</strong> win!!! #{msg}"
-    session[:player_pot] = session[:player_pot] + session[:player_bet]
     @play_again = true
-    
+    @show_hit_or_stay_button = false
+    session[:player_pot] = session[:player_pot] + session[:player_bet]    
+    @success ="<strong>#{session[:player_name]}</strong> win!!! #{msg}"
   end 
 
   def loser!(msg)
+    @play_again = true
     @show_hit_or_stay_button = false
-    @error = "<strong>#{session[:player_name]}</strong> lose!!! #{msg}"
     session[:player_pot] = session[:player_pot] - session[:player_bet]
-    if session[:player_pot] = 0
+    @error = "<strong>#{session[:player_name]}</strong> lose!!! #{msg}"
+
+    if session[:player_pot] == 0
       @show_recharge_money_button = true
       @play_again = false
-    else
-      @play_again = true
     end
   end
 
@@ -102,6 +101,7 @@ post '/new_player' do
 end
 
 get '/bet' do
+  session[:player_bet] = nil
   erb :bet
 end
 
@@ -109,8 +109,8 @@ post '/bet' do
   if params[:bet_amount].nil? || params[:bet_amount].to_i == 0
     @error = "You must to bet something"
     halt erb(:bet)
-  elsif params[:bet_amount].to_i >  session[:player_pot]
-    @error = "You have $#{session[:player_pot]} only,please don't bet more than what you have."
+  elsif params[:bet_amount].to_i > session[:player_pot]
+    @error = "You have $#{session[:player_pot]} only,please don't bet more thanplayer you have."
     halt erb(:bet)
   else
     session[:player_bet] = params[:bet_amount].to_i
@@ -147,7 +147,7 @@ post '/player/hit' do
   if player_total == BLACKJACK
     winner!("#{session[:player_name]} hit Black Jack")
   elsif player_total > BLACKJACK 
-    loser!("Sorry ,#{session[:player_name]} is busted at #{player_total}")
+    loser!("Sorry ,#{session[:player_name]} just busted at #{player_total}")
   end
   
   erb :game , layout: false

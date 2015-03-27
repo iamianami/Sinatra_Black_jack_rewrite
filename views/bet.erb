@@ -1,9 +1,27 @@
-<h3>Make a bet for this round</h3>
-<p><%=session[:player_name] %> has <%=session[:player_pot].to_i %></p>
+<h1 style="color:white" class='text-center'>
+    Make a bet for this round
+</h1>
+</br>
+</br>
+</br>
+</br>      
+<div class='col-md-4 col-md-offset-4'>
+  <div class="panel panel-primary">
+    <div class="panel-heading">How much do you wnat to bet</div>
+      <div class='panel-body text-center'>
+        <p>
+          Hello <span class="label label-primary"><%= session[:player_name]%></span> 
+          ,you have <span class="label label-danger"><%= session[:player_pot].to_i %></span> in this round
+        </p>
+        <form action='/bet' method='post'>
+          <input type='text' name='bet_amount'/>
+          <input type='submit' class="btn btn-danger" value='make a bet'/>
+        </form>
+      </div>
+  </div>
+</div>
 
 
-<form action='/bet' method='post'>
-  <input type='text' , name='bet_amount'/>
-  <input type='submit' value='make a bet'/>
-</form>
+
+
 

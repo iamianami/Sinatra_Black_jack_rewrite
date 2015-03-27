@@ -6,3 +6,10 @@ form#hit_button{
 img.image{
   margin:5px;
 }
+
+body {
+  background-image: url("images/table.jpg");
+  background-size: 1400px 820px;
+  background-repeat: no-repeat;
+}
+

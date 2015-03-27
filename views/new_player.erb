@@ -1,8 +1,23 @@
-<h1>Hello,Welcome to BlackJack Game</h1>
 
-<p>Please enter your name</p>
+<div id="new_player">
+  <h1 style="color:white" class='text-center'>
+    Welcome to BlackJack Game
+  </h1>
+  </br>
+  </br>
+  </br>
+  </br>      
+  <div class='col-md-4 col-md-offset-4'>
+    <div class="panel panel-primary">
+      <div class="panel-heading">Please enter your name</div>
+        <div class='panel-body text-center'>
+          <form action="/new_player" method="post">
+            <input type='text' name='player_name' placeholder='取個暱稱'>
+            <input type='submit' class='btn btn-primary' value="Let's start"/> 
+          </form>
+        </div>
+    </div>
+  </div>
+</div>
 
-<form action="/new_player" method="post">
-  <input type='text' name='player_name'>
-  <input type='submit' class='btn' value="Let's start"/> 
-</form>
+     
