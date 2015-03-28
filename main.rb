@@ -2,8 +2,9 @@ require 'rubygems'
 require 'sinatra'
 
 
-use Rack::Session::Cookie, :key => 'rack.session',
-                            :domain => 'herokuapp.com'
+use Rack::Session::Cookie, :key => "rack.session",
+                           :path => "/",
+                           :secret => "a_longish_secret_key"
                           
 
 BLACKJACK = 21
