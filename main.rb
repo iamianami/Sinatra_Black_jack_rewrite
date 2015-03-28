@@ -105,7 +105,6 @@ post '/new_player' do
 end
 
 get '/bet' do
-  session[:player_pot] = INITIAL_POT_AMOUNT
   session[:player_bet] = nil
   erb :bet
 end
